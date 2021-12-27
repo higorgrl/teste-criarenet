@@ -1,0 +1,113 @@
+<div class="d-flex bd-highlight">
+    <h4 class="card-title mr-auto bd-highlight">Status</h4>
+    <a class="btn btn-md btn-danger pull-right bd-highlight" href="">Informações Incorretos</a>
+</div>
+
+<div class="form-group pull-right bd-highlight">
+    <label class="font-weight-bold">Situação: </label>
+    <select class="form-control" name="sol_dados_corretos">
+        <option value="">Informações Corretas</option>
+        <option value="1">Informações Incorretas</option>
+    </select>
+</div>
+
+
+<div class="d-flex bd-highlight">
+    <h4 class="card-title mr-auto bd-highlight">Teste</h4>
+    <div class="form-group pull-right bd-highlight">
+        <label class="font-weight-bold">Situação: </label>
+        <select class="form-control" name="">
+            <option value=""></option>
+            <option value="1"></option>
+        </select>
+    </div>
+</div>
+
+
+<div class="box box-success">
+    <form method="GET" action="{{route('solicitacao.index')}}">
+        @csrf 
+        <div class="box-body">            
+            <div class="row">
+                @isset($_GET['grupo']) <input type="hidden" name="sol_usr_id" value="{{ $_GET['sol_usr_id'] }}"> @endisset
+                <div class="form-group col-sm-2">
+                    <label for="" class="font-weight-bold">Ordene sua Busca</label>
+                    <select class="form-control" name="field">
+						@foreach ($analistas as $analista)
+							<option value="{{$user->usr_id}}"  @isset($_GET['field']) @if($_GET['field'] == "user") @if(old('sol_usr_id') == $user->usr_id) selected  @endif>{{$user->usr_name}}</option>
+						@endforeach
+                    </select>
+                    {!! $errors->first('field','<span style="color:red" class="help-block">:message</span>') !!}
+                </div>
+
+                <div class="form-group col-sm-2">
+                    <label for="" class="font-weight-bold">Método</label>
+                    <select class="form-control" name="sort" required>
+                        <option value="asc" @isset($_GET['sort']) @if($_GET['sort'] == "asc") selected @endif @endisset>Ascendente</option>
+                        <option value="desc" @isset($_GET['sort']) @if($_GET['sort'] == "desc") selected @endif @endisset>Descendente</option>
+                    </select>
+                    {!! $errors->first('sort','<span style="color:red" class="help-block">:message</span>') !!}
+                </div>
+                <div class="form-group col-sm-2">
+                    <label for="" class="font-weight-bold">Itens por Lista</label>
+                    <select class="form-control" name="quantidade">                        
+                        <option value="25" @if($user->perPage() == "25") selected @endif>25</option>
+                        <option value="50" @if($user->perPage() == "50") selected @endif>50</option> 
+                        <option value="100" @if($user->perPage() == "100") selected @endif>100</option>                           
+                        <option value="200" @if($user->perPage() == "200") selected @endif>200</option>                           
+                    </select>
+                    {!! $errors->first('quantidade','<span style="color:red" class="help-block">:message</span>') !!}
+                </div>
+                <div class="form-group col-sm-1">
+                    <label for="" class="font-weight-bold"></label>
+                    <input type="submit" class="form-control btn btn-primary " value="Listar">
+                </div>
+                <div class="form-group col-sm-1">
+                    <label for="" class="font-weight-bold"></label>
+                    <a href="{{route('especie.index')}}" class="btn btn-info">Zerar Busca</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+
+
+
+
+if ($result = $mysqli->query("SELECT * FROM dados ORDER BY id"))
+{
+
+        if ($result->num_rows > 0)
+        {
+
+            echo "<table border='1' cellpadding='5' cellspacing=0 style=border-collapse: collapse bordercolor='#41c88c'>";
+
+
+                // definir cabeçalhos de tabela
+               echo "<tr> <th>ID</th> <th>Nome</th> <th>Email</th></tr>";
+
+                while ($row = $result->fetch_object())
+                {
+                // cria uma linha para cada registro
+                echo "<tr>";
+                echo "<td>" . $row->id . "</td>";
+                echo "<td>" . $row->nome . "</td>";
+                echo "<td>" . $row->email . "</td>";
+                echo "<td><a href='edit_usu.php?id=" . $row->id . "'>Editar</a></td>";
+                echo "<td><a href='delete.php?id=" . $row->id . "' onclick=\"return confirm('Tem certeza que deseja deletar esse registro?'); return false;\">Deletar</a></td>";
+                echo "</tr>";
+                }
+
+            echo "</table>";
+
+         }
+
+}
+
+
+
+
+
+
